@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нұрлан 50 Жас Мерейтойы • Шақыру</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Elegant & Classic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Семейства шрифтов */
+        .font-cursive {
+            font-family: 'Great Vibes', cursive;
+        }
+        .font-serif-lux {
+            font-family: 'Playfair Display', serif;
+        }
+        .font-sans-clean {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Мраморный/акварельный фон с золотым отливом */
+        body {
+            background-color: #f3f6f2;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(230, 235, 224, 0.7) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(220, 228, 212, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 253, 245, 0.8) 0%, transparent 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Текстовый золотой градиент с повышенным контрастом (более глубокие бронзово-золотые тона) */
+        .gold-text {
+            background: linear-gradient(135deg, #8a6421 0%, #b38728 40%, #735613 80%, #5c4308 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.4);
+            font-weight: 700;
+        }
+
+        .gold-border {
+            border-image: linear-gradient(135deg, #8a6421, #d4af37, #b38728, #fbf5b7, #735613) 1;
+        }
+
+        /* Анимация проявления элементов при прокрутке */
+        .reveal {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: all 1.2s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Анимация кружащихся листьев */
+        @keyframes leaf-fall {
+            0% {
+                transform: translateY(-5vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(105vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .leaf-particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 50;
+            animation: leaf-fall linear infinite;
+        }
+
+        /* Мерцание рамки */
+        @keyframes border-shimmer {
+            0% { opacity: 0.9; }
+            50% { opacity: 1; }
+            100% { opacity: 0.9; }
+        }
+        .shimmer-frame {
+            animation: border-shimmer 4s infinite ease-in-out;
+        }
+
+        /* Легкое покачивание золотого венка */
+        @keyframes gentle-spin {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(3deg) scale(1.02); }
+        }
+        .wreath-anim {
+            animation: gentle-spin 10s infinite ease-in-out;
+        }
+
+        /* Плавный пульс кнопки музыки */
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(138, 100, 33, 0.4); }
+            50% { box-shadow: 0 0 15px 4px rgba(138, 100, 33, 0.2); }
+        }
+        .btn-pulse {
+            animation: pulse-gold 3s infinite;
+        }
+    </style>
+</head>
+<body class="font-sans-clean text-[#0d2111] selection:bg-amber-100 min-h-screen relative pb-12">
+
+    <!-- Летающие листики (генерируются через JS) -->
+    <div id="leaves-container" class="fixed inset-0 pointer-events-none overflow-hidden z-40"></div>
+
+    <!-- Кнопка Музыкального Сопровождения -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="musicToggle" class="btn-pulse bg-white p-3 rounded-full border border-amber-300 shadow-lg hover:bg-amber-50 transition duration-300 flex items-center justify-center">
+            <svg id="musicOnIcon" class="w-6 h-6 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+            </svg>
+            <svg id="musicOffIcon" class="w-6 h-6 text-gray-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+            </svg>
+        </button>
+        <audio id="bgMusic" loop preload="auto">
+            <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" type="audio/wav">
+        </audio>
+    </div>
+
+    <!-- Главная Карточка Приглашения (Стилизация в точности как на фото с улучшенной контрастностью) -->
+    <div class="max-w-xl mx-auto px-4 pt-8 md:pt-16">
+        <!-- Фон карточки изменен на сплошной крем-белый (#fdfdfa) для идеального контраста -->
+        <div class="relative bg-[#fdfdfa] border-[6px] border-double gold-border p-6 md:p-10 shadow-2xl rounded-sm shimmer-frame overflow-hidden">
+            
+            <!-- Декоративные зеленые листья в углах (Акварельный стиль из SVG) -->
+            <!-- Верхний Левый Угол -->
+            <div class="absolute -top-4 -left-4 w-32 h-32 opacity-90 pointer-events-none">
+                <svg viewBox="0 0 100 100" class="w-full h-full text-emerald-900 fill-current">
+                    <path d="M10,40 Q30,20 60,10 Q40,35 15,45 Z" />
+                    <path d="M5,25 Q25,5 50,0 Q32,18 10,28 Z" fill-opacity="0.6"/>
+                    <path d="M25,50 Q45,35 75,30 Q50,55 30,55 Z" fill-opacity="0.8"/>
+                    <path d="M0,0 L30,5 L5,30 Z" class="text-amber-700/30" />
+                </svg>
+            </div>
+            <!-- Нижний Правый Угол -->
+            <div class="absolute -bottom-4 -right-4 w-32 h-32 opacity-90 pointer-events-none transform rotate-180">
+                <svg viewBox="0 0 100 100" class="w-full h-full text-emerald-900 fill-current">
+                    <path d="M10,40 Q30,20 60,10 Q40,35 15,45 Z" />
+                    <path d="M5,25 Q25,5 50,0 Q32,18 10,28 Z" fill-opacity="0.6"/>
+                    <path d="M25,50 Q45,35 75,30 Q50,55 30,55 Z" fill-opacity="0.8"/>
+                    <path d="M0,0 L30,5 L5,30 Z" class="text-amber-700/30" />
+                </svg>
+            </div>
+
+            <!-- Внутренняя тонкая золотая рамка -->
+            <div class="border border-amber-600/40 h-full w-full p-4 md:p-6 flex flex-col items-center text-center relative z-10">
+                
+                <!-- Золотой Венок (Wreath) вокруг 50 жас -->
+                <div class="wreath-anim relative w-52 h-52 flex items-center justify-center my-4">
+                    <!-- Круглый Золотой Обод -->
+                    <div class="absolute inset-0 rounded-full border-2 border-dashed border-amber-600/50 animate-[spin_120s_linear_infinite]"></div>
+                    <div class="absolute inset-2 rounded-full border-2 border-amber-500/70"></div>
+                    
+                    <!-- Вплетенные листики на венке -->
+                    <svg class="absolute inset-0 w-full h-full text-emerald-900 fill-current" viewBox="0 0 100 100">
+                        <!-- Левые листья венка -->
+                        <path d="M20,50 C18,30 35,15 50,15" fill="none" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M22,40 Q15,35 12,42 Z" />
+                        <path d="M28,30 Q22,22 18,30 Z" />
+                        <path d="M38,20 Q35,12 28,17 Z" />
+                        <!-- Правые листья венка -->
+                        <path d="M50,15 C65,15 82,30 80,50" fill="none" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M78,40 Q85,35 88,42 Z" />
+                        <path d="M72,30 Q78,22 82,30 Z" />
+                        <path d="M62,20 Q65,12 72,17 Z" />
+                        <!-- Дополнительные веточки внизу -->
+                        <path d="M50,85 C35,85 20,70 20,50" fill="none" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M25,70 Q18,75 22,82 Z" />
+                        <path d="M35,80 Q30,88 38,89 Z" />
+                        <path d="M50,85 C65,85 80,70 80,50" fill="none" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M75,70 Q82,75 78,82 Z" />
+                        <path d="M65,80 Q70,88 62,89 Z" />
+                    </svg>
+
+                    <!-- Центральная надпись 50 жас (с глубоким золотым градиентом) -->
+                    <div class="z-10 flex flex-col items-center justify-center -mt-2">
+                        <span class="text-7xl font-serif-lux font-bold gold-text drop-shadow-md select-none tracking-tight">50</span>
+                        <span class="text-3xl font-cursive text-emerald-950 mt-[-8px] font-bold italic tracking-wider">жас</span>
+                    </div>
+                </div>
+
+                <!-- Главный Текст Приглашения -->
+                <div class="mt-4 mb-4">
+                    <h2 class="font-cursive text-5xl text-emerald-950 mb-3 font-bold drop-shadow-sm">Құрметті</h2>
+                    <p class="font-serif-lux text-xl md:text-2xl text-emerald-950 font-bold leading-relaxed italic tracking-wide">
+                        ағайын-туыс, бауырлар,<br>дос-жарандар және<br>құрбы-құрдастар!
+                    </p>
+                </div>
+
+                <!-- Декоративный разделитель -->
+                <div class="flex items-center space-x-3 w-45 my-4">
+                    <div class="h-[1.5px] bg-gradient-to-r from-transparent to-amber-600 flex-1"></div>
+                    <span class="text-amber-700 text-sm">◆</span>
+                    <div class="h-[1.5px] bg-gradient-to-l from-transparent to-amber-600 flex-1"></div>
+                </div>
+
+                <!-- Пригласительное послание с высоким контрастом -->
+                <div class="reveal active max-w-md mt-4">
+                    <p class="font-sans-clean text-sm md:text-base leading-relaxed text-[#102414] font-medium px-2">
+                        Сіздерді ардақты әкеміз, аяулы жарымыз және бауырымыз — <br>
+                        <span class="block my-2"><strong class="gold-text font-serif-lux text-3xl font-extrabold tracking-wide drop-shadow-sm">НҰРЛАННЫҢ</strong></span>
+                        айтулы өмір белесі – 50 жас мерейтойына арналған салтанатты ақ дастарханымыздың қадірлі қонағы болуға шақырамыз!
+                    </p>
+                </div>
+
+                <!-- Дата и Время проведения торжества (Высококонтрастный блок) -->
+                <div class="reveal active mt-8 w-full bg-emerald-50 border-2 border-amber-600/30 py-6 px-4 rounded-lg shadow-md">
+                    <h3 class="font-serif-lux text-xs uppercase tracking-[0.2em] text-amber-900 font-extrabold mb-4">Торжество Күні мен Уақыты</h3>
+                    <div class="grid grid-cols-3 divide-x-2 divide-amber-600/20 items-center">
+                        <div class="text-center px-1">
+                            <span class="block font-serif-lux text-2xl font-extrabold text-[#0a1f0d]">2026</span>
+                            <span class="block text-[10px] text-emerald-950 uppercase tracking-widest font-bold mt-1">Жыл</span>
+                        </div>
+                        <div class="text-center px-1">
+                            <span class="block font-serif-lux text-2xl font-extrabold text-amber-800">07 Шілде</span>
+                            <span class="block text-[10px] text-emerald-950 uppercase tracking-widest font-bold mt-1">07.07.2026</span>
+                        </div>
+                        <div class="text-center px-1">
+                            <span class="block font-serif-lux text-2xl font-extrabold text-[#0a1f0d]">19:00</span>
+                            <span class="block text-[10px] text-emerald-950 uppercase tracking-widest font-bold mt-1">Басталуы</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Мекен-жайы (Адрес: Маметова 2) -->
+                <div class="reveal active mt-8 mb-4 w-full">
+                    <div class="inline-block bg-amber-100 p-3 rounded-full mb-3 border border-amber-300">
+                        <svg class="w-6 h-6 text-amber-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="font-serif-lux text-xs uppercase tracking-[0.15em] text-amber-900 font-extrabold mb-1">Өтетін орны (Мекен-жайы):</h4>
+                    <p class="font-serif-lux text-3xl font-extrabold text-[#0a1f0d] mt-1">Мәметова көшесі, 2</p>
+                    <p class="font-sans-clean text-xs text-[#1e3322] font-semibold mt-3 max-w-xs mx-auto">Той салтанаты белгіленген мекен-жай бойынша уақытында басталады. Сіздерді асыға күтеміз!</p>
+                    
+                    <!-- Кнопка перехода к навигатору по адресу с высоким контрастом -->
+                    <div class="mt-6">
+                        <a href="https://2gis.kz/search/%D0%9C%D0%B0%D0%BC%D0%B5%D1%82%D0%BE%D0%B2%D0%B0%202" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-700 to-amber-900 hover:from-amber-800 hover:to-black text-white text-xs uppercase tracking-widest font-bold py-3.5 px-10 rounded shadow-lg transition duration-300 transform hover:-translate-y-0.5">
+                            <span>Картадан бағытты қарау</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Подпись внизу -->
+                <div class="reveal active mt-12 border-t border-amber-600/20 pt-6 w-full text-center">
+                    <p class="font-cursive text-3xl text-amber-900 font-bold">Той иелері:</p>
+                    <p class="font-serif-lux text-lg text-[#0a1f0d] font-extrabold tracking-wide mt-1">Отбасы және балалары</p>
+                    <p class="font-sans-clean text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-6">© 2026 Барлық құқықтар қорғалған</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Логика (Листопад, Музыка) -->
+    <script>
+        // --- 1. Анимация появления при прокрутке ---
+        const reveals = document.querySelectorAll('.reveal');
+        function checkReveal() {
+            const triggerBottom = window.innerHeight * 0.95;
+            reveals.forEach(reveal => {
+                const revealTop = reveal.getBoundingClientRect().top;
+                if (revealTop < triggerBottom) {
+                    reveal.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', checkReveal);
+        window.addEventListener('load', checkReveal);
+
+        // --- 2. Генерация летающих листьев (Leaf Fall) ---
+        const leavesContainer = document.getElementById('leaves-container');
+        const leafPaths = [
+            "M10,20 Q30,0 50,10 Q30,30 10,20 Z",
+            "M5,15 C20,5 35,5 45,20 C30,30 15,25 5,15 Z",
+            "M20,40 Q10,20 40,10 Q30,30 20,40 Z"
+        ];
+        const leafColors = ["#224229", "#345c3e", "#0f2615", "#c29b2b"];
+
+        function createLeaf() {
+            const leaf = document.createElement('div');
+            leaf.classList.add('leaf-particle');
+            
+            const size = Math.random() * 15 + 10; 
+            const left = Math.random() * 100; 
+            const duration = Math.random() * 8 + 6; 
+            const delay = Math.random() * 5; 
+            const chosenPath = leafPaths[Math.floor(Math.random() * leafPaths.length)];
+            const chosenColor = leafColors[Math.floor(Math.random() * leafColors.length)];
+
+            leaf.style.width = `${size}px`;
+            leaf.style.height = `${size}px`;
+            leaf.style.left = `${left}%`;
+            leaf.style.animationDuration = `${duration}s`;
+            leaf.style.animationDelay = `${delay}s`;
+
+            leaf.innerHTML = `
+                <svg viewBox="0 0 50 50" class="w-full h-full" style="fill: ${chosenColor}; opacity: 0.85;">
+                    <path d="${chosenPath}" />
+                </svg>
+            `;
+
+            leavesContainer.appendChild(leaf);
+
+            setTimeout(() => {
+                leaf.remove();
+            }, (duration + delay) * 1000);
+        }
+
+        for (let i = 0; i < 15; i++) {
+            createLeaf();
+        }
+        setInterval(createLeaf, 1200);
+
+        // --- 3. Логика музыкального плеера ---
+        const musicToggle = document.getElementById('musicToggle');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicOnIcon = document.getElementById('musicOnIcon');
+        const musicOffIcon = document.getElementById('musicOffIcon');
+        let isMusicPlaying = false;
+
+        let audioCtx;
+        function playSynthMusic() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(329.63, audioCtx.currentTime); 
+            gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            
+            setInterval(() => {
+                if (isMusicPlaying) {
+                    const freqs = [261.63, 329.63, 392.00, 440.00]; 
+                    const randomFreq = freqs[Math.floor(Math.random() * freqs.length)];
+                    osc.frequency.setValueAtTime(randomFreq, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
+                }
+            }, 2000);
+        }
+
+        musicToggle.addEventListener('click', () => {
+            if (!isMusicPlaying) {
+                bgMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    updateMusicUI();
+                }).catch(err => {
+                    isMusicPlaying = true;
+                    playSynthMusic();
+                    updateMusicUI();
+                });
+            } else {
+                bgMusic.pause();
+                isMusicPlaying = false;
+                updateMusicUI();
+            }
+        });
+
+        function updateMusicUI() {
+            if (isMusicPlaying) {
+                musicOnIcon.classList.add('hidden');
+                musicOffIcon.classList.remove('hidden');
+            } else {
+                musicOnIcon.classList.remove('hidden');
+                musicOffIcon.classList.add('hidden');
+            }
+        }
+
+        document.body.addEventListener('click', () => {
+            if (!isMusicPlaying) {
+                bgMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    updateMusicUI();
+                }).catch(() => {});
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>
+
